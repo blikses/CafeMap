@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}
+CafeMap | Все локации
+{% endblock %}
+
+{% block body %}
+<div class="album py-5 bg-body-tertiary">
+    <div class="container">
+        <h2 class="text-center mb-4"><i class="fas fa-map-marker-alt"></i> Все локации</h2>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for location in locations %}
+            <div class="col">
+                <div class="card shadow-sm h-100">
+                    {% if location.photo %}
+                    <img src="{{ url_for('static', filename=location.photo) }}"
+                         class="card-img-top"
+                         style="height: 225px; object-fit: cover;"
+                         alt="{{ location.name }}">
+                    {% else %}
+                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center"
+                         style="height: 225px;">
+                        <i class="fas fa-camera fa-3x text-white"></i>
+                    </div>
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ location.name }}</h5>
+
+                        <div class="mb-2">
+                            <span class="badge bg-primary mb-1">
+                                <i class="fas fa-{{ 'utensils' if location.type in ['Ресторан', 'Кафе'] else 'landmark' }}"></i>
+                                {{ location.type }}
+                            </span>
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-subway"></i> {{ location.metro }}
+                            </span>
+                        </div>
+
+                        <p class="card-text flex-grow-1">{{ location.description|truncate(100) }}</p>
+
+                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                            <div class="btn-group">
+                                <a href="{{ location.map_link }}" target="_blank"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-map-marked-alt"></i> На карте
+                                </a>
+                                {% if current_user.is_authenticated %}
+                                <button class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                            <small class="text-body-secondary">
+                                <i class="fas fa-star text-warning"></i>
+                                {{ "%.1f"|format(location.rating) if location.rating else 'Нет оценок' }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

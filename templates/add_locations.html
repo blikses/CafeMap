@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+CafeMap | Добавить локацию
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2><i class="fas fa-plus-circle"></i> Добавить новую локацию</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control") }}
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form.location_type.label(class="form-label") }}
+                {{ form.location_type(class="form-select") }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.metro.label(class="form-label") }}
+                {{ form.metro(class="form-select") }}
+            </div>
+        </div>
+        <div class="mb-3">
+            {{ form.address.label(class="form-label") }}
+            {{ form.address(class="form-control") }}
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form.coordinates.label(class="form-label") }}
+                {{ form.coordinates(class="form-control", placeholder="55.123456, 37.123456") }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.yandex_map_link.label(class="form-label") }}
+                {{ form.yandex_map_link(class="form-control") }}
+            </div>
+        </div>
+        <div class="mb-3">
+            {{ form.photo.label(class="form-label") }}
+            {{ form.photo(class="form-control") }}
+            <div class="form-text">Загрузите фотографию локации (JPG, PNG)</div>
+        </div>
+        <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows=5) }}
+        </div>
+        <div class="mb-3">
+            {{ form.promo_code.label(class="form-label") }}
+            {{ form.promo_code(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+    </form>
+</div>
+{% endblock %}
