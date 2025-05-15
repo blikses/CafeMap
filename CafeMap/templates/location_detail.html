@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}
+CafeMap | {{ location.title }}
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>{{ location.title }}</h1>
+            <p class="lead">
+                <span class="badge bg-primary">{{ location.type.name }}</span>
+                <span class="badge bg-secondary ms-2">
+                    <i class="fas fa-subway"></i> {{ location.metro.name }}
+                </span>
+            </p>
+            
+            {% if location.photo %}
+            <img src="{{ url_for('static', filename='img/DEMI.jpg') }}" class="img-fluid rounded mb-4" alt="{{ location.title }}">
+            {% endif %}
+            
+            <h4>Описание</h4>
+            <p>{{ location.description }}</p>
+            
+            <h4>Адрес</h4>
+            <p>{{ location.address }}</p>
+            
+            {% if location.yandex_map_link %}
+            <div class="mt-4">
+                <a href="{{ location.yandex_map_link }}" target="_blank" class="btn btn-outline-primary">
+                    <i class="fas fa-map-marked-alt"></i> Посмотреть на карте
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Информация</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Тип:</strong> {{ location.type.name }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Метро:</strong> {{ location.metro.name }}
+                        </li>
+                        {% if location.coordinates %}
+                        <li class="list-group-item">
+                            <strong>Координаты:</strong> {{ location.coordinates }}
+                        </li>
+                        {% endif %}
+                        {% if location.promo_code %}
+                        <li class="list-group-item">
+                            <strong>Промокод:</strong> 
+                            <span class="badge bg-success">{{ location.promo_code }}</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    
+                    <div class="mt-3 text-center">
+                        <div class="rating">
+                            <i class="fas fa-star {% if location.rating and location.rating >= 1 %}text-warning{% else %}text-secondary{% endif %}"></i>
+                            <i class="fas fa-star {% if location.rating and location.rating >= 2 %}text-warning{% else %}text-secondary{% endif %}"></i>
+                            <i class="fas fa-star {% if location.rating and location.rating >= 3 %}text-warning{% else %}text-secondary{% endif %}"></i>
+                            <i class="fas fa-star {% if location.rating and location.rating >= 4 %}text-warning{% else %}text-secondary{% endif %}"></i>
+                            <i class="fas fa-star {% if location.rating and location.rating >= 5 %}text-warning{% else %}text-secondary{% endif %}"></i>
+                            <span class="ms-2">{{ location.rating|round(1) if location.rating else 'Нет оценок' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

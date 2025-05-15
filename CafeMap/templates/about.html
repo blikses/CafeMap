@@ -1,9 +1,97 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Страница про нас
+CafeMap | О проекте
 {% endblock %}
 
 {% block body %}
-<h1>Страница про нас</h1>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 mb-4"><i class="fas fa-heart"></i> О проекте CafeMap</h1>
+            <p class="lead mb-5">
+                Мы знаем, как сложно бывает выбрать идеальное место для прогулки — то, где будет красиво, уютно
+                и по-настоящему атмосферно. Поэтому создали для вас удобный сборник самых живописных и необычных локаций —
+                от тихих парков до ярких городских уголков с арт-объектами.
+            </p>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <img src="{{ url_for('static', filename='creators/Maria.JPG') }}"
+                     class="card-img-top creator-photo"
+                     alt="Федченко Мария Дмитриевна">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Мария Федченко</h3>
+                    <p class="card-text text-muted">
+                        "Идея CafeMap родилась во время наших совместных прогулок по городу,
+                        когда мы поняли, как много прекрасных мест остаются незамеченными."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <img src="{{ url_for('static', filename='creators/Ksenia.jpg') }}"
+                     class="card-img-top creator-photo"
+                     alt="Ксения Сергеевна Семидьянова">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Ксения Семидьянова</h3>
+                    <p class="card-text text-muted">
+                        "Для нас важно, чтобы каждый мог найти место по душе — будь то уютное кафе
+                        для работы или живописный сквер для встречи с друзьями."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="about-story bg-light p-4 rounded-3">
+                <h2 class="text-center mb-4"><i class="fas fa-book-open"></i> Наша история</h2>
+                <p>
+                    Всё началось с обычной дружеской прогулки в 2024 году. Мы заметили, что многие прекрасные места
+                    в нашем городе остаются неизвестными для большинства людей. Одни теряются среди рекламы сетевых заведений,
+                    другие просто не имеют хорошей презентации в интернете.
+                </p>
+                <p>
+                    Решив изменить эту ситуацию, мы начали собирать свою коллекцию атмосферных мест. Сначала это был
+                    простой чат в мессенджере, куда мы скидывали друг другу находки. Потом — Google-карта с метками.
+                    А когда количество локаций перевалило за сотню, поняли: пора создавать полноценный сервис.
+                </p>
+                <p class="mb-0">
+                    Сегодня CafeMap — это больше чем просто карта. Это сообщество единомышленников, которые ценят
+                    атмосферу, красоту и уют. Каждая новая локация проверяется лично нами, а отзывы помогают поддерживать
+                    актуальную информацию.
+                </p>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="{{ url_for('show_locations') }}" class="btn btn-primary btn-lg px-4">
+                    <i class="fas fa-map-marked-alt"></i> Посмотреть все локации
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .creator-photo {
+        height: 300px;
+        object-fit: cover;
+        object-position: top;
+        border-radius: 0;
+    }
+    .about-story {
+        line-height: 1.8;
+        font-size: 1.1rem;
+    }
+    .about-story p {
+        margin-bottom: 1.5rem;
+    }
+</style>
 {% endblock %}

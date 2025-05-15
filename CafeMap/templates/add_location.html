@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% if location %}Редактировать локацию{% else %}Добавить новую локацию{% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2>{% if location %}Редактировать локацию{% else %}Добавить новую локацию{% endif %}</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.type.label(class="form-label") }}
+                    {{ form.type(class="form-select") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.address.label(class="form-label") }}
+                    {{ form.address(class="form-control") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.metro.label(class="form-label") }}
+                    {{ form.metro(class="form-control") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.coordinates.label(class="form-label") }}
+                    {{ form.coordinates(class="form-control", placeholder="55.123456, 37.123456") }}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form.map_link.label(class="form-label") }}
+                    {{ form.map_link(class="form-control") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.photo.label(class="form-label") }}
+                    {{ form.photo(class="form-control") }}
+                    {% if location and location.photo %}
+                    <div class="mt-2">
+                        <small>Текущее фото:</small>
+                        <img src="{{ url_for('static', filename=location.photo) }}"
+                             class="img-thumbnail mt-1" style="max-height: 100px;">
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.rating.label(class="form-label") }}
+                    {{ form.rating(class="form-control", type="number", min="0", max="5", step="0.1") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.promo_code.label(class="form-label") }}
+                    {{ form.promo_code(class="form-control") }}
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows=5) }}
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="{{ url_for('show_locations') }}" class="btn btn-secondary me-md-2">Отмена</a>
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}
