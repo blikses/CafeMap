@@ -1,13 +1,12 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, EmailField, TextAreaField, SelectField, FileField
 from wtforms.validators import DataRequired, Email, EqualTo
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
-from flask_wtf.file import FileAllowed
-from wtforms.validators import InputRequired
+import folium
+import webbrowser
 import os
 from werkzeug.utils import secure_filename
 
@@ -91,6 +90,49 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
+def show_map_with_photos(self):
+        """Создаёт карту с фотографиями и названиями всех локаций и открывает её в браузере"""
+        # Центр карты
+        map_center = [55.751244, 37.618423]
+        moscow_map = folium.Map(location=map_center, zoom_start=12)
+
+        # Получение данных из базы
+        self.cursor.execute("SELECT name, description, coordinates, photo FROM locations")
+        locations = self.cursor.fetchall()
+
+        for location in locations:
+            name, description, coordinates, photo_path = location
+
+            try:
+                coords = [float(coord) for coord in coordinates.split(",")]
+
+                # Преобразование пути к изображению в абсолютный
+                photo_path = os.path.abspath(photo_path)
+
+                # Проверка существования файла
+                if not os.path.exists(photo_path):
+                    photo_path = ""  # Убираем фото, если файла нет
+
+                # Создаём HTML-содержимое всплывающего окна
+                popup_content = f"""
+                <b>{name}</b><br>
+                {description}<br>
+                <img src="{photo_path}" alt="{name}" width="150">
+                """
+                folium.Marker(
+                    location=coords,
+                    popup=folium.Popup(popup_content, max_width=300),
+                    tooltip=name
+                ).add_to(moscow_map)
+            except ValueError:
+                print(f"Некорректные координаты для локации: {name}")
+
+        # Сохраняем карту в HTML
+        map_file = "locations_map_with_photos.html"
+        moscow_map.save(map_file)
+
+        # Открываем карту в браузере
+        webbrowser.open(f"file://{os.path.abspath(map_file)}")
 
 # Редактирование локации
 @app.route('/edit_location/<int:id>', methods=['GET', 'POST'])
@@ -211,6 +253,11 @@ def show_locations():
 @app.route('/about')
 def about():
     return render_template("about.html")
+
+
+@app.route('/locations_map_with_photos')
+def locations_map_with_photos():
+    return render_template("locations_map_with_photos.html")
 
 
 # Регистрация
