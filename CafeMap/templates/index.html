@@ -10,16 +10,23 @@ CafeMap | Лучшие кофейни города
     <div class="row py-lg-5">
       <div class="col-lg-6 col-md-8 mx-auto">
         <h1 class="fw-light"><i class="fas fa-mug-hot"></i> CafeMap</h1>
-        <p class="lead text-body-secondary">Топ лучших кофеен и ресторанов по версии наших посетителей</p>
+        <p class="lead text-body-secondary">Топ лучших кофеен, ресторанов и локаций по версии наших посетителей</p>
+
+        <!-- Кнопка "О нас" вынесена отдельно и сделана розовой -->
+        <div class="mb-4">
+          <a href="/about" class="btn btn-pink my-2">
+            <i class="fas fa-info-circle"></i> О НАС
+          </a>
+        </div>
+
+        <p class="lead text-body-first">Присоединяйтесь → Редактируйте → Совершенствуйте!</p>
         <p>
           <a href="/locations" class="btn btn-primary my-2">
             <i class="fas fa-map-marked-alt"></i> Все локации
           </a>
-          {% if current_user.is_authenticated %}
-          <a href="/about" class="btn btn-secondary my-2">
-            <i class="fas fa-heart"></i> О НАС
+          <a href="/register" class="btn btn-primary my-2">
+            <i class="fas fa-user-plus"></i> Присоединиться
           </a>
-          {% endif %}
         </p>
       </div>
     </div>
@@ -89,4 +96,17 @@ CafeMap | Лучшие кофейни города
     </div>
   </div>
 </main>
+
+<style>
+  .btn-pink {
+    background-color: #808000;
+    color: white;
+    border-color: #808000;
+  }
+  .btn-pink:hover {
+    background-color: #808000;
+    border-color: #808000;
+    color: white;
+  }
+</style>
 {% endblock %}

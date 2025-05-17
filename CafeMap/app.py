@@ -9,9 +9,9 @@ import folium
 import webbrowser
 import os
 from werkzeug.utils import secure_filename
+from flask_wtf.file import FileAllowed
 
 app = Flask(__name__)
-# Указываем путь к базе данных в папке instance
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../instance/location.db'
 app.config['SECRET_KEY'] = 'your-secret-key-here'
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'img')
@@ -21,12 +21,8 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-# Добавим в импорты
-from flask_wtf.file import FileAllowed
-from wtforms.validators import InputRequired
 
-
-# Форма для добавления/редактирования локации
+# Форма для добавления и редактирования локации
 class LocationForm(FlaskForm):
     name = StringField('Название локации', validators=[DataRequired()])
     type = SelectField('Тип локации', choices=[
@@ -88,51 +84,53 @@ def add_location():
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+        filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
 
 def show_map_with_photos(self):
-        """Создаёт карту с фотографиями и названиями всех локаций и открывает её в браузере"""
-        # Центр карты
-        map_center = [55.751244, 37.618423]
-        moscow_map = folium.Map(location=map_center, zoom_start=12)
+    """Создаёт карту с фотографиями и названиями всех локаций и открывает её в браузере"""
+    # Центр карты
+    map_center = [55.751244, 37.618423]
+    moscow_map = folium.Map(location=map_center, zoom_start=12)
 
-        # Получение данных из базы
-        self.cursor.execute("SELECT name, description, coordinates, photo FROM locations")
-        locations = self.cursor.fetchall()
+    """Получение данных из базы"""
+    self.cursor.execute("SELECT name, description, coordinates, photo FROM locations")
+    locations = self.cursor.fetchall()
 
-        for location in locations:
-            name, description, coordinates, photo_path = location
+    for location in locations:
+        name, description, coordinates, photo_path = location
 
-            try:
-                coords = [float(coord) for coord in coordinates.split(",")]
+        try:
+            coords = [float(coord) for coord in coordinates.split(",")]
 
-                # Преобразование пути к изображению в абсолютный
-                photo_path = os.path.abspath(photo_path)
+            """ Преобразование пути к изображению в абсолютный"""
+            photo_path = os.path.abspath(photo_path)
 
-                # Проверка существования файла
-                if not os.path.exists(photo_path):
-                    photo_path = ""  # Убираем фото, если файла нет
+            """Проверка существования файла"""
+            if not os.path.exists(photo_path):
+                photo_path = ""  # Убираем фото, если файла нет
 
-                # Создаём HTML-содержимое всплывающего окна
-                popup_content = f"""
+            # Создаём HTML-содержимое всплывающего окна
+            popup_content = f"""
                 <b>{name}</b><br>
                 {description}<br>
                 <img src="{photo_path}" alt="{name}" width="150">
                 """
-                folium.Marker(
-                    location=coords,
-                    popup=folium.Popup(popup_content, max_width=300),
-                    tooltip=name
-                ).add_to(moscow_map)
-            except ValueError:
-                print(f"Некорректные координаты для локации: {name}")
+            folium.Marker(
+                location=coords,
+                popup=folium.Popup(popup_content, max_width=300),
+                tooltip=name
+            ).add_to(moscow_map)
+        except ValueError:
+            print(f"Некорректные координаты для локации: {name}")
 
-        # Сохраняем карту в HTML
-        map_file = "locations_map_with_photos.html"
-        moscow_map.save(map_file)
+    # Сохраняем карту в HTML
+    map_file = "locations_map_with_photos.html"
+    moscow_map.save(map_file)
 
-        # Открываем карту в браузере
-        webbrowser.open(f"file://{os.path.abspath(map_file)}")
+    # Открываем карту в браузере
+    webbrowser.open(f"file://{os.path.abspath(map_file)}")
+
 
 # Редактирование локации
 @app.route('/edit_location/<int:id>', methods=['GET', 'POST'])
@@ -195,9 +193,9 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-# Модель локации (обновленная по вашей структуре)
+# Модель локации
 class Location(db.Model):
-    __tablename__ = 'locations'  # Явно указываем имя таблицы
+    __tablename__ = 'locations'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)  # Название локации
@@ -206,7 +204,7 @@ class Location(db.Model):
     metro = db.Column(db.String(50), nullable=False)
     coordinates = db.Column(db.String(50))
     map_link = db.Column(db.String(500))  # Ссылка на Яндекс карты
-    photo = db.Column(db.String(100))  # Путь к фото (img/filename.jpg)
+    photo = db.Column(db.String(100))  # Путь к фото
     description = db.Column(db.Text, nullable=False)
     promo_code = db.Column(db.String(50))  # Промокод
     rating = db.Column(db.Float)  # Рейтинг
@@ -255,6 +253,7 @@ def about():
     return render_template("about.html")
 
 
+# Страница с локациями на карте
 @app.route('/locations_map_with_photos')
 def locations_map_with_photos():
     return render_template("locations_map_with_photos.html")
